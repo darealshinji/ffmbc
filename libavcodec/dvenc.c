@@ -827,7 +827,8 @@ static inline int dv_write_pack(enum dv_pack_type pack_id, DVVideoContext *c,
      *   2. It is not at all clear what STYPE is used for 4:2:0 PAL
      *      compression scheme (if any).
      */
-    int apt = c->sys->pix_fmt == PIX_FMT_YUV420P ? 0 : 1;
+    int apt = (c->sys->pix_fmt == PIX_FMT_YUV420P ||
+               (c->sys->pix_fmt == PIX_FMT_YUV411P && c->sys->height == 480)) ? 0 : 1;
     uint8_t aspect = 0;
     int il = c->avctx->height >= 720 || c->avctx->interlaced; // il reserved in 370m
     int fs = c->avctx->height == 720 || (c->avctx->interlaced == 1 + (c->avctx->height < 720));

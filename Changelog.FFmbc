@@ -1,3 +1,9 @@
+FFmbc-0.7.4:
+- Improve XDCAM HD422 MXF compatibility with Sony Content browser
+
+FFmbc-0.7.3:
+- Support Apple Intermediate Codec decoding
+
 FFmbc-0.7.2:
 - Support XAVC in Quicktime
 - Remove ffplay

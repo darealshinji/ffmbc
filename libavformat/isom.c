@@ -222,6 +222,8 @@ const AVCodecTag codec_movvideo_tags[] = {
     { CODEC_ID_PRORES, MKTAG('a', 'p', 'c', 'o') }, /* Apple ProRes 422 Proxy */
     { CODEC_ID_PRORES, MKTAG('a', 'p', '4', 'h') }, /* Apple ProRes 4444 */
 
+    { CODEC_ID_AIC, MKTAG('i', 'c', 'o', 'd') }, /* Apple Intermediate Codec */
+
     { CODEC_ID_NONE, 0 },
 };
 
