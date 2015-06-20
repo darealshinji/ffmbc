@@ -242,20 +242,20 @@ typedef struct AVProbeData {
 
 typedef struct AVFormatParameters {
 #if FF_API_FORMAT_PARAMETERS
-    attribute_deprecated AVRational time_base;
-    attribute_deprecated int sample_rate;
-    attribute_deprecated int channels;
-    attribute_deprecated int width;
-    attribute_deprecated int height;
-    attribute_deprecated enum PixelFormat pix_fmt;
-    attribute_deprecated int channel; /**< Used to select DV channel. */
-    attribute_deprecated const char *standard; /**< deprecated, use demuxer-specific options instead. */
-    attribute_deprecated unsigned int mpeg2ts_raw:1;  /**< deprecated, use mpegtsraw demuxer */
+    AVRational time_base;
+    int sample_rate;
+    int channels;
+    int width;
+    int height;
+    enum PixelFormat pix_fmt;
+    int channel; /**< Used to select DV channel. */
+    const char *standard; /**< deprecated, use demuxer-specific options instead. */
+    unsigned int mpeg2ts_raw:1;  /**< deprecated, use mpegtsraw demuxer */
     /**< deprecated, use mpegtsraw demuxer-specific options instead */
-    attribute_deprecated unsigned int mpeg2ts_compute_pcr:1;
-    attribute_deprecated unsigned int initial_pause:1;       /**< Do not begin to play the stream
+    unsigned int mpeg2ts_compute_pcr:1;
+    unsigned int initial_pause:1;       /**< Do not begin to play the stream
                                                                   immediately (RTSP only). */
-    attribute_deprecated unsigned int prealloced_context:1;
+    unsigned int prealloced_context:1;
 #endif
 } AVFormatParameters;
 
@@ -696,12 +696,7 @@ typedef struct AVFormatContext {
     AVStream **streams;
     char filename[1024]; /**< input or output filename */
     /* stream info */
-#if FF_API_TIMESTAMP
-    /**
-     * @deprecated use 'creation_time' metadata tag instead
-     */
-    attribute_deprecated int64_t timestamp;
-#endif
+    int64_t timestamp;
 
     int ctx_flags; /**< Format-specific flags, see AVFMTCTX_xx */
     /* private data for pts handling (do not modify directly). */
@@ -753,7 +748,7 @@ typedef struct AVFormatContext {
      *
      * @deprecated use the 'loop' private option in the gif muxer.
      */
-    attribute_deprecated int loop_output;
+    int loop_output;
 #endif
 
     int flags;
@@ -776,7 +771,7 @@ typedef struct AVFormatContext {
     /**
      * @deprecated, use the 'loop' img2 demuxer private option.
      */
-    attribute_deprecated int loop_input;
+    int loop_input;
 #endif
 
     /**
@@ -1064,7 +1059,7 @@ int av_probe_input_buffer(AVIOContext *pb, AVInputFormat **fmt,
  *        This does not open the needed codecs for decoding the stream[s].
  * @deprecated use avformat_open_input instead.
  */
-attribute_deprecated int av_open_input_stream(AVFormatContext **ic_ptr,
+int av_open_input_stream(AVFormatContext **ic_ptr,
                          AVIOContext *pb, const char *filename,
                          AVInputFormat *fmt, AVFormatParameters *ap);
 
@@ -1082,7 +1077,7 @@ attribute_deprecated int av_open_input_stream(AVFormatContext **ic_ptr,
  *
  * @deprecated use avformat_open_input instead.
  */
-attribute_deprecated int av_open_input_file(AVFormatContext **ic_ptr, const char *filename,
+int av_open_input_file(AVFormatContext **ic_ptr, const char *filename,
                        AVInputFormat *fmt,
                        int buf_size,
                        AVFormatParameters *ap);
@@ -1426,7 +1421,7 @@ int64_t av_gen_search(AVFormatContext *s, int stream_index,
 /**
  * @deprecated pass the options to avformat_write_header directly.
  */
-attribute_deprecated int av_set_parameters(AVFormatContext *s, AVFormatParameters *ap);
+int av_set_parameters(AVFormatContext *s, AVFormatParameters *ap);
 #endif
 
 /**

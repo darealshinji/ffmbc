@@ -1,3 +1,7 @@
+FFmbc-0.7.2:
+- Support XAVC in Quicktime
+- Remove ffplay
+
 FFmbc-0.7.1:
 - Support AVCIntra 23.98p in MXF
 

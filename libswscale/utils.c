@@ -811,21 +811,47 @@ int sws_init_context(SwsContext *c, SwsFilter *srcFilter, SwsFilter *dstFilter)
     getSubSampleFactors(&c->chrSrcHSubSample, &c->chrSrcVSubSample, srcFormat);
     getSubSampleFactors(&c->chrDstHSubSample, &c->chrDstVSubSample, dstFormat);
 
-    // reuse chroma for 2 pixels RGB/BGR unless user wants full chroma interpolation
+    if (isAnyRGB(dstFormat) && !(flags&SWS_FULL_CHR_H_INT)) {
+        if (dstW&1) {
+            av_log(c, AV_LOG_DEBUG, "Forcing full internal H chroma due to odd output size\n");
+            flags |= SWS_FULL_CHR_H_INT;
+            c->flags = flags;
+        }
+
+        if (   c->chrSrcHSubSample == 0
+            && c->chrSrcVSubSample == 0
+            && !(c->flags & SWS_FAST_BILINEAR)
+        ) {
+            av_log(c, AV_LOG_DEBUG, "Forcing full internal H chroma due to input having non subsampled chroma\n");
+            flags |= SWS_FULL_CHR_H_INT;
+            c->flags = flags;
+        }
+    }
+
+    /* reuse chroma for 2 pixels RGB/BGR unless user wants full
+     * chroma interpolation */
     if (flags & SWS_FULL_CHR_H_INT &&
-        dstFormat != PIX_FMT_RGBA &&
-        dstFormat != PIX_FMT_ARGB &&
-        dstFormat != PIX_FMT_BGRA &&
-        dstFormat != PIX_FMT_ABGR &&
+        isAnyRGB(dstFormat)        &&
+        dstFormat != PIX_FMT_RGBA  &&
+        dstFormat != PIX_FMT_ARGB  &&
+        dstFormat != PIX_FMT_BGRA  &&
+        dstFormat != PIX_FMT_ABGR  &&
         dstFormat != PIX_FMT_RGB24 &&
-        dstFormat != PIX_FMT_BGR24) {
-        av_log(c, AV_LOG_ERROR,
+        dstFormat != PIX_FMT_BGR24 &&
+        dstFormat != PIX_FMT_BGR4_BYTE &&
+        dstFormat != PIX_FMT_RGB4_BYTE &&
+        dstFormat != PIX_FMT_BGR8 &&
+        dstFormat != PIX_FMT_RGB8
+    ) {
+        av_log(c, AV_LOG_WARNING,
                "full chroma interpolation for destination format '%s' not yet implemented\n",
-               sws_format_name(dstFormat));
-        flags &= ~SWS_FULL_CHR_H_INT;
+               av_get_pix_fmt_name(dstFormat));
+        flags   &= ~SWS_FULL_CHR_H_INT;
         c->flags = flags;
     }
-    if (isAnyRGB(dstFormat) && !(flags&SWS_FULL_CHR_H_INT)) c->chrDstHSubSample=1;
+    if (isAnyRGB(dstFormat) && !(flags & SWS_FULL_CHR_H_INT))
+        c->chrDstHSubSample = 1;
+
 
     // drop some chroma lines if the user wants it
     c->vChrDrop= (flags&SWS_SRC_V_CHR_DROP_MASK)>>SWS_SRC_V_CHR_DROP_SHIFT;

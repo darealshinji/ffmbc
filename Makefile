@@ -10,7 +10,6 @@ vpath %.texi $(SRC_PATH)
 
 
 PROGS-$(CONFIG_FFMBC)    += ffmbc
-PROGS-$(CONFIG_FFPLAY)   += ffplay
 PROGS-$(CONFIG_FFPROBE)  += ffprobe
 
 PROGS      := $(PROGS-yes:%=%$(EXESUF))
@@ -21,7 +20,7 @@ HOSTPROGS  := $(TESTTOOLS:%=tests/%)
 TOOLS       = qt-faststart trasher
 TOOLS-$(CONFIG_ZLIB) += cws2fws
 
-BASENAMES   = ffmbc ffplay ffprobe
+BASENAMES   = ffmbc ffprobe
 ALLPROGS    = $(BASENAMES:%=%$(EXESUF))
 ALLPROGS_G  = $(BASENAMES:%=%_g$(EXESUF))
 ALLMANPAGES = $(BASENAMES:%=%.1)
@@ -75,9 +74,6 @@ include $(SRC_PATH)/$(1)/Makefile
 endef
 
 $(foreach D,$(FFLIBS),$(eval $(call DOSUBDIR,lib$(D))))
-
-ffplay.o: CFLAGS += $(SDL_CFLAGS)
-ffplay_g$(EXESUF): FF_EXTRALIBS += $(SDL_LIBS)
 
 %_g$(EXESUF): %.o cmdutils.o $(FF_DEP_LIBS)
 	$(LD) $(LDFLAGS) -o $@ $< cmdutils.o $(FF_EXTRALIBS)

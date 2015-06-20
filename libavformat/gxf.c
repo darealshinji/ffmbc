@@ -422,7 +422,6 @@ static int gxf_packet(AVFormatContext *s, AVPacket *pkt) {
     AVIOContext *pb = s->pb;
     GXFPktType pkt_type;
     int pkt_len;
-    struct gxf_stream_info *si = s->priv_data;
 
     while (!pb->eof_reached) {
         AVStream *st;

@@ -77,7 +77,7 @@ typedef struct {
 
 
 static const AVOption options[] = {
-    { "use_odml", "use odml index", offsetof(AVIContext, use_odml), FF_OPT_TYPE_INT, 1, -1, 1, AV_OPT_FLAG_DECODING_PARAM},
+    { "use_odml", "use odml index", offsetof(AVIContext, use_odml), FF_OPT_TYPE_INT, {.dbl = 1}, -1, 1, AV_OPT_FLAG_DECODING_PARAM},
     { NULL },
 };
 
@@ -166,12 +166,10 @@ static int read_braindead_odml_indx(AVFormatContext *s, int frame_num){
     st= s->streams[stream_id];
     ast = st->priv_data;
 
-    if(index_sub_type)
-        return -1;
-
     avio_rl32(pb);
 
-    if(index_type && longs_pre_entry != 2)
+    // Matrox MMES uses 6 longs per entry  for files bigger than 2GB
+    if(index_type && longs_pre_entry != 2 && longs_pre_entry != 6)
         return -1;
     if(index_type>1)
         return -1;
@@ -186,8 +184,19 @@ static int read_braindead_odml_indx(AVFormatContext *s, int frame_num){
 
     for(i=0; i<entries_in_use; i++){
         if(index_type){
-            int64_t pos= avio_rl32(pb) + base - 8;
-            int len    = avio_rl32(pb);
+            int64_t pos;
+            int len;
+
+            if(longs_pre_entry == 6){	// Matrox MMES "Big" Standard Index Entry
+                pos = avio_rl64(pb);
+                len = avio_rl64(pb);
+                avio_rl64(pb);
+            }else{
+                pos = avio_rl32(pb);
+                len = avio_rl32(pb);
+            }
+
+            pos += base - 8;
             int key= len >= 0;
             len &= 0x7FFFFFFF;
 
@@ -417,7 +426,15 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
         }
         case MKTAG('d', 'm', 'l', 'h'):
             avi->is_odml = 1;
-            avio_skip(pb, size + (size & 1));
+            size += size & 1;
+	    // Here we set the correct duration
+            if (size >= 4 && stream_index < (unsigned)s->nb_streams) {
+                st = s->streams[stream_index];
+                st->nb_frames = avio_rl32(pb);
+                st->duration = st->nb_frames;
+                size -= 4;
+            }
+            avio_skip(pb, size);
             break;
         case MKTAG('a', 'm', 'v', 'h'):
             amv_file_format=1;

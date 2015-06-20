@@ -79,7 +79,6 @@ Configuration options:
   --enable-nonfree         allow use of nonfree code, the resulting libs
                            and binaries will be unredistributable [no]
   --disable-doc            do not build documentation
-  --disable-ffplay         disable ffplay build
   --disable-ffprobe        disable ffprobe build
   --disable-avdevice       disable libavdevice build
   --disable-avcodec        disable libavcodec build
@@ -915,7 +914,6 @@ CONFIG_LIST="
     dxva2
     fastdiv
     ffmbc
-    ffplay
     ffprobe
     fft
     frei0r
@@ -1509,8 +1507,6 @@ postproc_deps="gpl"
 # programs
 ffmpeg_deps="avcodec avformat swscale"
 ffmpeg_select="buffer_filter buffersink_filter"
-ffplay_deps="avcodec avformat swscale sdl"
-ffplay_select="buffersink_filter rdft"
 ffprobe_deps="avcodec avformat"
 
 doc_deps="texi2html"
@@ -1658,7 +1654,6 @@ enable debug
 enable doc
 enable fastdiv
 enable ffmpeg
-enable ffplay
 enable ffprobe
 enable mpegaudio_hp
 enable network

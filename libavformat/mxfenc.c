@@ -1900,6 +1900,10 @@ static int mxf_write_header(AVFormatContext *s)
                 mxf->cbr_index = 1;
             }
         } else if (st->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
+            if (!samples_per_frame) {
+                av_log(s, AV_LOG_ERROR, "muxing audio only is not supported currently\n");
+                return -1;
+            }
             if (st->codec->sample_rate != 48000) {
                 av_log(s, AV_LOG_ERROR, "only 48khz is implemented\n");
                 return -1;
@@ -1953,11 +1957,6 @@ static int mxf_write_header(AVFormatContext *s)
         if (!present[sc->index])
             mxf->essence_container_count++;
         present[sc->index]++;
-    }
-
-    if (!samples_per_frame) {
-        av_log(s, AV_LOG_ERROR, "muxing audio only is not supported currently\n");
-        return -1;
     }
 
     if (s->oformat == &ff_mxf_d10_muxer)

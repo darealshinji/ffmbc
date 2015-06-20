@@ -52,7 +52,8 @@
                       tag == AV_RL32("ai13") || tag == AV_RL32("ai12") || \
                       tag == AV_RL32("ai5p") || tag == AV_RL32("ai5q") || \
                       tag == AV_RL32("ai56") || tag == AV_RL32("ai55") || \
-                      tag == AV_RL32("ai53") || tag == AV_RL32("ai52"))
+                      tag == AV_RL32("ai53") || tag == AV_RL32("ai52") || \
+                      tag == AV_RL32("aivx") || tag == AV_RL32("aivx"))
 
 #define FAST_START_OPTION \
     { "faststart", "Pre-allocate space for the header in front of the file: <size or 'auto' or 'no'>\n" \

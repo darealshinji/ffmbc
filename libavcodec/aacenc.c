@@ -185,7 +185,7 @@ static av_cold int aac_encode_init(AVCodecContext *avctx)
         av_log(avctx, AV_LOG_ERROR, "Unsupported sample rate %d\n", avctx->sample_rate);
         return -1;
     }
-    if (avctx->channels > AAC_MAX_CHANNELS) {
+    if (!avctx->channels || avctx->channels > 2) {
         av_log(avctx, AV_LOG_ERROR, "Unsupported number of channels: %d\n", avctx->channels);
         return -1;
     }

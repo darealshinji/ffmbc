@@ -238,8 +238,6 @@ static int read_header(AVFormatContext *s1, AVFormatParameters *ap)
         return ret;
     }
 #if FF_API_FORMAT_PARAMETERS
-    if (ap->pix_fmt != PIX_FMT_NONE)
-        pix_fmt = ap->pix_fmt;
     if (ap->width > 0)
         width = ap->width;
     if (ap->height > 0)

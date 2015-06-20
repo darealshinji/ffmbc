@@ -244,7 +244,6 @@ static int ogg_buffer_data(AVFormatContext *s, AVStream *st,
 static uint8_t *ogg_write_vorbiscomment(int offset, int bitexact,
                                         int *header_len, AVDictionary **m, int framing_bit)
 {
-    AVDictionaryEntry *t;
     const char *vendor = bitexact ? "ffmpeg" : LIBAVFORMAT_IDENT;
     int size;
     uint8_t *p, *p0;

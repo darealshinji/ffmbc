@@ -99,7 +99,7 @@ static int mxg_update_cache(AVFormatContext *s, unsigned int cache_size)
 {
     MXGContext *mxg = s->priv_data;
     unsigned int current_pos = mxg->buffer_ptr - mxg->buffer;
-    unsigned int soi_pos;
+    unsigned int soi_pos = 0;
     int ret;
 
     /* reallocate internal buffer */

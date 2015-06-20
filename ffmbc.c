@@ -1709,12 +1709,12 @@ static int output_packet(InputStream *ist, int ist_index,
     int got_output;
     AVFrame picture;
     static unsigned int samples_size= 0;
-    AVSubtitle subtitle, *subtitle_to_free;
+    AVSubtitle subtitle, *subtitle_to_free = NULL;
     int64_t pkt_pts = AV_NOPTS_VALUE;
 #if CONFIG_AVFILTER
     int frame_available;
 #endif
-    float quality;
+    float quality = 0;
 
     AVPacket avpkt;
     int bps = av_get_bytes_per_sample(ist->st->codec->sample_fmt);
@@ -3165,7 +3165,6 @@ static int transcode(AVFormatContext **output_files,
                 goto fail;
             }
             assert_codec_experimental(ist->st->codec, 0);
-            assert_avoptions(ost->opts);
             //if (ist->st->codec->codec_type == AVMEDIA_TYPE_VIDEO)
             //    ist->st->codec->flags |= CODEC_FLAG_REPEAT_FIELD;
         }
@@ -3863,15 +3862,15 @@ static int opt_video_standard(const char *opt, const char *arg)
 
 static int opt_codec(const char *opt, const char *arg)
 {
-    int *pstream_copy; char **pcodec_name = NULL; enum AVMediaType codec_type;
+    int *pstream_copy = NULL; char **pcodec_name = NULL;
 
-    if      (!strcmp(opt, "acodec")) { pstream_copy = &audio_stream_copy;    pcodec_name = &audio_codec_name;    codec_type = AVMEDIA_TYPE_AUDIO;    }
-    else if (!strcmp(opt, "vcodec")) { pstream_copy = &video_stream_copy;    pcodec_name = &video_codec_name;    codec_type = AVMEDIA_TYPE_VIDEO;    }
-    else if (!strcmp(opt, "scodec")) { pstream_copy = &subtitle_stream_copy; pcodec_name = &subtitle_codec_name; codec_type = AVMEDIA_TYPE_SUBTITLE; }
-    else if (!strcmp(opt, "dcodec")) { pstream_copy = &data_stream_copy;     pcodec_name = &data_codec_name;     codec_type = AVMEDIA_TYPE_DATA;     }
+    if      (!strcmp(opt, "acodec")) { pstream_copy = &audio_stream_copy;    pcodec_name = &audio_codec_name;    }
+    else if (!strcmp(opt, "vcodec")) { pstream_copy = &video_stream_copy;    pcodec_name = &video_codec_name;    }
+    else if (!strcmp(opt, "scodec")) { pstream_copy = &subtitle_stream_copy; pcodec_name = &subtitle_codec_name; }
+    else if (!strcmp(opt, "dcodec")) { pstream_copy = &data_stream_copy;     pcodec_name = &data_codec_name;     }
 
     av_freep(pcodec_name);
-    if (!strcmp(arg, "copy")) {
+    if (pstream_copy && !strcmp(arg, "copy")) {
         *pstream_copy = 1;
     } else {
         *pcodec_name = av_strdup(arg);

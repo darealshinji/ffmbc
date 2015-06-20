@@ -48,6 +48,7 @@ static int len_put_str16(const char *str)
 
     do {
         uint16_t tmp;
+        tmp = tmp;
         GET_UTF8(ch, *q++, break;);
         PUT_UTF16(ch, tmp, ret += 2;);
     } while (ch);
@@ -240,7 +241,7 @@ static int mp3_write_xing(AVFormatContext *s)
     AVCodecContext   *codec = s->streams[0]->codec;
     MP3Context       *mp3 = s->priv_data;
     int              bitrate_idx;
-    int              best_bitrate_idx;
+    int              best_bitrate_idx = 0;
     int              best_bitrate_error= INT_MAX;
     int64_t          xing_offset;
     int32_t          mask, header;

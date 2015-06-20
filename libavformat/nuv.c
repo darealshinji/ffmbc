@@ -135,7 +135,7 @@ static int nuv_header(AVFormatContext *s, AVFormatParameters *ap) {
     NUVContext *ctx = s->priv_data;
     AVIOContext *pb = s->pb;
     char id_string[12];
-    double aspect, fps;
+    double aspect;
     int is_mythtv, width, height, v_packs, a_packs;
     int stream_nr = 0;
     AVStream *vst = NULL, *ast = NULL;
@@ -152,7 +152,7 @@ static int nuv_header(AVFormatContext *s, AVFormatParameters *ap) {
     aspect = av_int2dbl(avio_rl64(pb));
     if (aspect > 0.9999 && aspect < 1.0001)
         aspect = 4.0 / 3.0;
-    fps = av_int2dbl(avio_rl64(pb));
+    av_int2dbl(avio_rl64(pb)); // fps
 
     // number of packets per stream type, -1 means unknown, e.g. streaming
     v_packs = avio_rl32(pb);
