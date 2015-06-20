@@ -227,7 +227,7 @@ static const char *srt_to_ass(void *log_ctx, char *out, char *out_end,
                                     for (j=sptr-2; j>=0; j--)
                                         if (stack[j].param[i][0]) {
                                             out += snprintf(out, out_end-out,
-                                                            stack[j].param[i]);
+                                                            "%s", stack[j].param[i]);
                                             break;
                                         }
                         } else {
@@ -263,7 +263,7 @@ static const char *srt_to_ass(void *log_ctx, char *out, char *out_end,
                             for (i=0; i<PARAM_NUMBER; i++)
                                 if (stack[sptr].param[i][0])
                                     out += snprintf(out, out_end-out,
-                                                    stack[sptr].param[i]);
+                                                    "%s", stack[sptr].param[i]);
                         }
                     } else if (!buffer[1] && strspn(buffer, "bisu") == 1) {
                         out += snprintf(out, out_end-out,
